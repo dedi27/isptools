@@ -1,5 +1,9 @@
 FROM mhart/alpine-node:6
 
+ENV DNSSERVERS 189.45.192.3,177.200.200.20
+ENV DNS1 189.45.192.3
+ENV DNS2 177.200.200.20
+
 RUN apk add --no-cache make gcc g++ python
 
 # Create app directory
