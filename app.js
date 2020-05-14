@@ -19,7 +19,7 @@ var app = express();
 var sID = 0;
 var login = false;
 
-dns.setServers(['189.45.192.3', '177.200.200.20']);  // Define custom DNS Resolvers @author Jardel F. F. de Araujo
+dns.setServers(['xxx.xxx.xxx.xxx', 'xxx.xxx.xxx.xxx']);  // Define custom DNS Resolvers @author Jardel F. F. de Araujo
 app.use(function (req, res, next) {
 	res.header("X-powered-by", "Giovane Heleno - www.giovane.pro.br");
 	res.header("X-version", version);
