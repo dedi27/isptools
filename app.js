@@ -146,6 +146,7 @@ app.get('/DNS/:method/:id', function (req, res) {
 	attrIP = attrIP.toString();
 	method = method.toString().toUpperCase();
 	if (method == "PTR" && !net.isIP(attrIP)) {
+		console.log(req.query);
 		res.json({
 			"datetime": Date(),
 			"method": method,
