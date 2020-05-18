@@ -41,6 +41,12 @@ $ docker run --restart=always -p 8000:8000 -d isptools/probe
 ```
 
 Este comando, executará o ISPTools em sua máquina, mapeando a porta 8000 (TCP) e configurando para inicializar na inicialização da máquina.
+  
+Caso queira utilizar servidores DNS diferentes, pode ser utilizado a variável de ambiente DNSSERVERS:
+
+```sh
+$ docker run --restart=always -p 8000:8000 -e DNSSERVERS=1.2.3.4,4.3.2.1 -d isptools/probe
+```
 
 
 ## Pronto!
