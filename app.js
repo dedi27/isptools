@@ -191,10 +191,18 @@ app.get('/HTTP/:id', function (req, res) {
 	if (url.parse(attrIP).protocol == null) {
 		attrIP = "http://" + attrIP;
 	}
-
 	attrIPoriginal = attrIP;
 	attrIP = injection(attrIP);
 	if (url.parse(attrIP).protocol == 'http:') {
+		testeIP = dns.resolve(attrIP);
+		http.get('http://' + testeIP, {
+  			headers : { host : attrIP }
+		}, res => {
+  			console.log('okay');
+		}).on('error', e => {
+  			console.log('E', e.message);
+		});
+
 		var httpreq = http.get(attrIP, function (e) {
 				res.json({
 					"datetime": Date(),
