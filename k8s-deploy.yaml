@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: isptools
+  namespace: isptools
+  labels:
+    app: isptools
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: isptools
+  template:
+    metadata:
+      labels:
+        app: isptools
+    spec:
+      containers:
+        - name: isptools
+          image: <ISPTOOLS_IMAGE_PATH>:<TAG>
+          ports:
+            - name: service
+              hostPort: 8000
+              containerPort: 8000
+              protocol: TCP
+          env:
+          #  - name: DNSSERVERS          
+          #    value: 8.8.8.8,4.4.4.4     # Descomentar para configurar um servidor DNS específico para resolução de DNS
+            - name: TZ
+              value: America/Sao_Paulo
+          resources:
+            limits:
+              cpu: 150m
+              memory: 256Mi
+            requests:
+              cpu: '0'
+              memory: 32Mi
+          imagePullPolicy: Always
+          stdin: false
+          tty: false
+          securityContext:
+            capabilities:
+              add: ["NET_RAW"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: isptools
+  namespace: isptools
+spec:
+  ports:
+    - name: service-isptools
+      protocol: TCP
+      port: 8000
+      targetPort: 8000
+  selector:
+    app: isptools
+  type: NodePort
