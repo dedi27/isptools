@@ -18,8 +18,11 @@ var express = require('express');
 var app = express();
 var sID = 0;
 var login = false;
+var DNSSERVERS = String(process.env.DNSSERVERS).split(',');
+if ((DNSSERVERS) && (DNSSERVERS[0] != 'undefined')) {
+    dns.setServers(DNSSERVERS);  // Define custom DNS Resolvers @author Jardel F. F. de Araujo
+}
 
-dns.setServers(['xxx.xxx.xxx.xxx', 'xxx.xxx.xxx.xxx']);  // Define custom DNS Resolvers @author Jardel F. F. de Araujo
 app.use(function (req, res, next) {
 	res.header("X-powered-by", "Giovane Heleno - www.giovane.pro.br");
 	res.header("X-version", version);
@@ -145,17 +148,19 @@ app.get('/DNS/:method/:id', function (req, res) {
 	var method = req.params.method;
 	attrIP = attrIP.toString();
 	method = method.toString().toUpperCase();
-	if (method == "PTR" && !net.isIP(attrIP)) {
-		console.log(attrIP);
-		res.json({
-			"datetime": Date(),
-			"method": method,
-			"host": attrIP,
-			"err": {
-				code: 'BADFAMILY'
-			},
-			"ipv": (net.isIP(attrIP) ? (net.isIPv6(attrIP) ? 6 : 4) : 0),
-			"query": req.query
+	if (method == "PTR" && net.isIP(attrIP)) {
+		//console.log('Resolvendo o reverso do IP ' + attrIP);
+        dns.reverse(attrIP, function(err, hostnames) {
+			//console.log(hostnames);
+		    res.json({
+			    "datetime": Date(),
+			    "method": method,
+			    "host": attrIP,
+			    "err": err,
+				"result": hostnames,
+			    "ipv": (net.isIP(attrIP) ? (net.isIPv6(attrIP) ? 6 : 4) : 0),
+			    "query": req.query
+            });
 		});
 	} else
 		dns.resolve(attrIP, method, function (err, domains) {
@@ -191,18 +196,10 @@ app.get('/HTTP/:id', function (req, res) {
 	if (url.parse(attrIP).protocol == null) {
 		attrIP = "http://" + attrIP;
 	}
+
 	attrIPoriginal = attrIP;
 	attrIP = injection(attrIP);
 	if (url.parse(attrIP).protocol == 'http:') {
-		//testeIP = dns.resolve(attrIP);
-		//http.get('http://' + testeIP, {
-  		//	headers : { host : attrIP }
-		//}, res => {
-  		//	console.log('okay');
-		//}).on('error', e => {
-  		//	console.log('E', e.message);
-		//});
-
 		var httpreq = http.get(attrIP, function (e) {
 				res.json({
 					"datetime": Date(),

@@ -6,4 +6,4 @@ then
 else
   sed -ri -e "s/^dns.setServers.*//" app.js
 fi
-pm2-docker app2.js
+pm2-docker app.js
